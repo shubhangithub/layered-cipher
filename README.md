@@ -1,15 +1,20 @@
 # layered-cipher
 
+[![tests](https://github.com/shubhangithub/layered-cipher/actions/workflows/ci.yml/badge.svg)](https://github.com/shubhangithub/layered-cipher/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 A reversible, **multi-layer cipher** in Python. It takes a 16-digit number and
 a 4-digit PIN, runs them through four stacked transformation layers on a 16×16
 integer matrix, and writes the result to an ASCII file. A matching decryption
 routine reverses every layer and recovers the original input exactly.
 
-> This started as a college project. The code here is a cleaned-up, fixed, and
-> tested version: the original scripts had a broken file format and used numpy
-> idioms that no longer exist in modern numpy, so the encrypt → file → decrypt
-> pipeline didn't actually run end to end. It does now, and the round trip is
-> covered by tests.
+> **Origin.** Built as a college project in **December 2021** (the matrix layer
+> grew out of a linear-algebra course). This is a cleaned-up, fixed, and tested
+> rebuild: the original scripts had a broken file format and used numpy idioms
+> that no longer exist in modern numpy, so the encrypt → file → decrypt pipeline
+> didn't actually run end to end. It does now, and the round trip is covered by
+> a test suite that runs on every push.
 
 ## What it does
 
@@ -54,6 +59,27 @@ cipher.save_encrypted(payload, "encrypted.json")
 
 number, pin = cipher.decrypt(cipher.load_encrypted("encrypted.json"))
 ```
+
+## Demo
+
+```text
+$ python encrypt.py -n 4539123412341234 -p 5678 --seed 7 --show
+Encrypted -> encrypted.json
+
+Ciphertext grid (ASCII characters):
+蔘 蕂 陲 虢 蔛 赠 蔘 蜶 阄 虢 阍 蕂 蜶 赠 蔫 趺
+蝁 赠 蝁 赕 蕂 蔛 蔘 蔘 蔘 蜶 陲 陲 蔘 陲 趺 虢
+蜶 跃 蔛 跃 蝁 跃 赠 陲 蜶 陧 蔛 蜶 蜶 赠 蜶 蔛
+...
+
+$ python decrypt.py
+Number: 4539123412341234
+PIN:    5678
+```
+
+The characters look like CJK glyphs because the cipher's numbers land in that
+Unicode range — on disk they are stored as `\uXXXX` escapes, so the file stays
+pure ASCII.
 
 ## Tests
 
